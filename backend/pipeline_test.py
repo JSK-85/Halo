@@ -7,7 +7,7 @@ from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineTask, PipelineParams
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.google.llm import GoogleLLMService
-from pipecat.services.elevenlabs.tts import ElevenLabsTTSService
+from pipecat.services.deepgram.tts import DeepgramTTSService
 from pipecat.transports.local.audio import LocalAudioTransport
 from pipecat.processors.aggregators.llm_context import LLMContext
 from pipecat.processors.aggregators.llm_response_universal import (
@@ -43,12 +43,10 @@ async def main():
         )
     )
 
-    # ElevenLabs TTS — Rachel voice
-    tts = ElevenLabsTTSService(
-        api_key=os.getenv('ELEVENLABS_API_KEY'),
-        settings=ElevenLabsTTSService.Settings(
-            voice='21m00Tcm4TlvDq8ikWAM'
-        )
+    # Deepgram TTS — Asteria voice
+    tts = DeepgramTTSService(
+        api_key=os.getenv('DEEPGRAM_API_KEY'),
+        voice='aura-asteria-en'
     )
 
     # Initialize empty context

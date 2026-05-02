@@ -271,7 +271,7 @@ voice-assistant/
 │   ├── agent.py              # Pipecat pipeline — STT → LLM → TTS, MemorySaver, per-user personalisation
 │   ├── token_server.py       # FastAPI — /token, /auth/google, /auth/me, /auth/logout
 │   ├── memory.py             # SQLAlchemy models (Message, UserProfile), CRUD helpers
-│   ├── pipeline_test.py      # Local mic/speaker test (ElevenLabs TTS, no LiveKit)
+│   ├── pipeline_test.py      # Local mic/speaker test (Deepgram TTS, no LiveKit)
 │   └── Procfile              # Railway: web + agent processes
 ├── frontend/
 │   ├── src/
@@ -308,7 +308,7 @@ Things in this codebase that differ from a standard Pipecat example:
 | **Dynamic system prompt** | `agent.py:162-198` | On `on_participant_connected`, the agent resolves the LiveKit participant SID → identity, looks up the Google profile in SQLite, and hot-swaps `llm._settings.system_instruction` with the user's first name. |
 | **SID → identity resolution** | `agent.py:170-177` | Pipecat's event handler passes the LiveKit SID (`PA_xxx`), not the identity. The code iterates `room.remote_participants.values()` to match SID → identity. |
 | **`cancel_on_idle_timeout=False`** | `agent.py:159` | Keeps the agent alive between user sessions instead of shutting down after idle. |
-| **`pipeline_test.py` uses ElevenLabs** | `pipeline_test.py:47-52` | The local test script uses `ElevenLabsTTSService` (Rachel voice) + `LocalAudioTransport` for headphone testing. The production `agent.py` uses Deepgram TTS + LiveKit transport. |
+| **`pipeline_test.py` uses local audio** | `pipeline_test.py:47-52` | The local test script uses `DeepgramTTSService` (Asteria voice) + `LocalAudioTransport` for headphone testing. The production `agent.py` uses the same TTS but with LiveKit transport. |
 | **Vite proxy rewrite** | `vite.config.ts:14-18` | Frontend calls `/api/token` → Vite rewrites to `http://localhost:8000/token`. Avoids CORS in development. |
 
 
@@ -322,7 +322,6 @@ Things in this codebase that differ from a standard Pipecat example:
 | **Agent crashes on startup** | Missing API keys | Check `.env` has all required variables. `agent.py` will throw on `None` keys passed to Deepgram/Google/LiveKit. |
 | **"Could not resolve participant from room"** | Timing issue | The agent's `on_participant_connected` fires before LiveKit propagates the remote participant. The code falls back to using the SID as identity — the user will get a generic greeting. |
 | **Stale ports on restart** | Previous processes still bound | `start.sh` kills processes on `:8000` and `:9090` on startup. If running manually, check `lsof -ti:8000` and `lsof -ti:9090`. |
-| **ElevenLabs import error** | Wrong script | `pipeline_test.py` imports ElevenLabs. If you don't have the key or the package, that script will fail — it's a standalone test, not needed for production. |
 | **Session cookie not persisting** | Cross-origin cookie issue | In production, set `samesite='none'` and `secure=True` on the cookie in `token_server.py` if frontend and backend are on different domains. |
 
 ## License

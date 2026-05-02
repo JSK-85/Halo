@@ -159,7 +159,6 @@ sequenceDiagram
 | **Frontend** | React 19 + Vite 7 | TanStack Router, `livekit-client` SDK (raw Room API) |
 | **Styling** | Tailwind CSS v4 | OKLCH colour system, Instrument Serif + Inter typography |
 | **Auth** | Google OAuth 2.0 | `@react-oauth/google`, server-side token verification |
-| **Deploy** | Railway + Vercel | Procfile-based backend, static frontend |
 
 ## Key Features
 
@@ -312,22 +311,6 @@ Things in this codebase that differ from a standard Pipecat example:
 | **`pipeline_test.py` uses ElevenLabs** | `pipeline_test.py:47-52` | The local test script uses `ElevenLabsTTSService` (Rachel voice) + `LocalAudioTransport` for headphone testing. The production `agent.py` uses Deepgram TTS + LiveKit transport. |
 | **Vite proxy rewrite** | `vite.config.ts:14-18` | Frontend calls `/api/token` → Vite rewrites to `http://localhost:8000/token`. Avoids CORS in development. |
 
-## Deployment
-
-### Backend → Railway
-
-The `Procfile` runs two processes on a single Railway service:
-
-```
-web: uvicorn token_server:app --host 0.0.0.0 --port $PORT
-agent: python agent.py
-```
-
-Set all environment variables in the Railway dashboard. `DATABASE_URL` will use SQLite by default — for production, swap to PostgreSQL (the `memory.py` fallback URL is already PostgreSQL-shaped).
-
-### Frontend → Vercel
-
-Deploy the `frontend/` directory as a Vite project. Configure the Vite proxy or set an environment variable to point API calls at the Railway backend URL.
 
 ## Troubleshooting
 

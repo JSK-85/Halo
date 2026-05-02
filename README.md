@@ -19,11 +19,14 @@ Halo is a full-duplex voice assistant you talk to in your browser. You speak int
 
 ## Screenshots
 
-> Replace the placeholders below with actual screenshots once the UI is running.
+### Landing / Sign-in
+![Landing screen](docs/screenshots/Landing.png)
 
-| Landing / Sign-in | Listening State | Speaking State |
-|---|---|---|
-| ![Landing screen](docs/screenshots/landing.png) | ![Listening state](docs/screenshots/listening.png) | ![Speaking state](docs/screenshots/speaking.png) |
+### Listening State
+![Listening state](docs/screenshots/Listening.png)
+
+### Speaking State
+![Speaking state](docs/screenshots/Speaking.png)
 
 ## Architecture
 
